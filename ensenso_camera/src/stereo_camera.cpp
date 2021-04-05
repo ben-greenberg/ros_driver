@@ -1166,7 +1166,16 @@ ros::Time StereoCamera::capture() const
   {
     capture.parameters()[itmTimeout] = captureTimeout;
   }
-  capture.execute();
+  try
+  {
+    capture.execute();
+  }
+  catch (const std::exception &e)
+  {
+    ROS_WARN("Exception caught during execution of nxLib Capture. Error: %s", e.what());
+    return ros::Time::now();
+  }
+  //capture.execute();
 
   NxLibItem imageNode = cameraNode[itmImages][itmRaw];
   imageNode = imageNode[itmLeft];
